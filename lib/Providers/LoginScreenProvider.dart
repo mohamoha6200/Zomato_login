@@ -21,6 +21,7 @@ class LoginProvider extends ChangeNotifier{
    BuildContext context;
    bool isloading=false;
   TextEditingController textController;
+  String phno="";
   String validatePhoneNumber(String mobileNumberText) {
 
     /* Validation to check whether string contins special character or alphabets*/
@@ -46,13 +47,14 @@ class LoginProvider extends ChangeNotifier{
 
   Future<bool> login(String dialcode,String phoneNumber) async {
 isloading=true;
+phno="$dialcode$phoneNumber";
 refreshScreen();
     try{
       final path = "$baseUrl/login/otp/send";
       final response = await ApiService.getInstance().getClient().post(
         path,
         data: {
-          "phoneNumber": "$dialcode$phoneNumber",
+          "phoneNumber": phno,
         },
       );
 

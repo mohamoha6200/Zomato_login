@@ -6,6 +6,7 @@ import 'package:sms_autofill/sms_autofill.dart';
 
 import 'EditedPackages/OtpPackages/otp_field.dart';
 import 'EditedPackages/OtpPackages/style.dart';
+import 'Providers/LoginScreenProvider.dart';
 import 'Providers/OtpScreenProvider.dart';
 import 'support/ConstantsVariables.dart';
 
@@ -23,6 +24,8 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill  {
     _getAuthSignature();
     listenForCode();
     _listenOtp();
+
+
     super.initState();
   }
   Future<void> _getAuthSignature() async {
@@ -36,11 +39,11 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill  {
   @override
   void codeUpdated() {
 
-    setState(() {
+/*    setState(() {
       controller.setOtp("$code");
       print("otp is $otpcode");
       otpcode = code;
-    });
+    });*/
   }
 
   OtpBlockController controller=new OtpBlockController();
@@ -49,12 +52,18 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill  {
   int _pinlength=6;
   @override
   Widget build(BuildContext context) {
+    final provider=   Provider.of<OtpScreenProvider>(context);
+
     return MaterialApp(
       home: Scaffold(
         resizeToAvoidBottomInset : true,
-        appBar: AppBar(),
+        appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Text("Enter Verification Code",style: TextStyle(color: Colors.black),)),
         body: Consumer<OtpScreenProvider>(
-            builder: (context, provider, child) {
+            builder: (context, value, child) {
+              final provider=  Provider.of<LoginProvider>(context);
+              value.countDown();
               return LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     return Container(
@@ -66,9 +75,9 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill  {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Expanded(
-                              flex: 8,
+                              flex: 10,
                               child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Container(
@@ -77,19 +86,23 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill  {
                                           left: 30,
                                           right: 30)
                                       , child: Center(
-                                      child: Text(
-                                        "Did you get your code?Enter it here!",
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.openSans(fontSize: 20,
-                                            color: HexColor(
-                                                $mobileInputHeaderTitle),
-                                            fontWeight: FontWeight.bold),
+                                      child: RichText(
+                                        textAlign:TextAlign.center ,
+                                        text: TextSpan(
+
+                                          text: ' ',
+                                          style: DefaultTextStyle.of(context).style,
+                                          children: <TextSpan>[
+                                            TextSpan(text: 'We have sent Verification Code to\n',),
+                                            TextSpan(text: ' ${provider.phno}' , style: TextStyle(fontWeight: FontWeight.bold)),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     ),
                                     Container(
                                       padding: EdgeInsets.symmetric(
-                                        horizontal: 50,),
+                                        horizontal: 50,vertical: 20),
                                       child: OTPTextField(
                                         length: _pinlength,
                                         controller: controller,
@@ -106,95 +119,50 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill  {
                                             fontSize: 20
                                         ),
                                         onCompleted: (pin) {
-                                          setState(() {
+                                        /*  setState(() {
                                             iscontinoueStatus = true;
-                                          });
+                                          });*/
                                         },
                                         uncomplete: () {
-                                          if (iscontinoueStatus == true)
+                                          /*if (iscontinoueStatus == true)
                                             setState(() {
                                               iscontinoueStatus = false;
-                                            });
+                                            });*/
                                         },
                                       ),
                                     ),
-                                    Container(
-                                        padding: EdgeInsets.all(10),
-                                        child: Text(
-                                          "We need it to verify your account,and exclusively for that reason.It will never to shown on your profile."
-                                          , textAlign: TextAlign.center,
-                                          style: TextStyle(color: HexColor(
-                                              $hexMobileInputbelowSubtitleColor)),
-                                        )
 
-                                    ),
 
                                   ]),
                             ),
                             Expanded(
-                              flex: 5,
+                              flex: 7,
                               child: Column(
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    iscontinoueStatus ? Container(
-                                      width: constraints.maxWidth * 0.7,
-                                      child: RaisedButton(
-                                        onPressed: () {},
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                80.0)),
-                                        padding: EdgeInsets.all(0.0),
-                                        child: Ink(
-                                          decoration: BoxDecoration(
-                                              gradient: LinearGradient(colors: [
-                                                Color(0xff374ABE),
-                                                Color(0xff64B6FF)
-                                              ],
-                                                begin: Alignment.centerLeft,
-                                                end: Alignment.centerRight,
-                                              ),
-                                              borderRadius: BorderRadius.circular(
-                                                  30.0)
-                                          ),
-                                          child: Container(
-                                            constraints: BoxConstraints(
-                                                minHeight: 50.0),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "Continue",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 17,
-                                                  color: Colors.white
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                                 Text("0:${value.totalDurationinstr}",style: TextStyle(fontSize: 24),),
+                                   SizedBox(height: 20,),
+                                    RichText(
+                                      text: TextSpan(
+                                        style: DefaultTextStyle.of(context).style,
+                                        children: <TextSpan>[
+                                          TextSpan(text: "Didn't receive the code?", style: TextStyle(fontWeight: FontWeight.bold)),
+                                          TextSpan(text: ' Resent Now',style: ((){
+                                            if(value.istimerDone==true){
+                                              return TextStyle(color: Colors.red);
+                                            }else{
+
+                                            }
+
+                                          }())),
+                                        ],
                                       ),
                                     )
-                                        : Container(
-                                      height: 50,
-                                      width: constraints.maxWidth * 0.7,
-                                      child: FlatButton(
-                                        onPressed: null,
-                                        child: Text('Continue', style: TextStyle(
-                                            fontSize: 17,
-                                            color: HexColor("EBEBF0")
-                                        )
-                                        ),
-                                        textColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                color: HexColor("EBEBF0"),
-                                                width: 1,
-                                                style: BorderStyle.solid
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                                50)),
-                                      ),
-                                    )
+
+
+
 
                                   ]),
                             ),

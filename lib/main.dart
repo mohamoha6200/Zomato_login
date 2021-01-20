@@ -78,7 +78,7 @@ class _ZomatoLoginStatefulState extends State<ZomatoLoginStateful> {
 
   @override
   Widget build(BuildContext context) {
-
+    final provider = Provider.of<LoginProvider>(context);
     Size size = MediaQuery
         .of(context)
         .size;
@@ -87,7 +87,7 @@ class _ZomatoLoginStatefulState extends State<ZomatoLoginStateful> {
       body: Consumer<LoginProvider>(
         builder: (context, value,child) {
           value.context=context;
-          final provider = Provider.of<LoginProvider>(context);
+
           
          return SingleChildScrollView(
             controller: controller,
@@ -161,8 +161,8 @@ class _ZomatoLoginStatefulState extends State<ZomatoLoginStateful> {
 
                                     return Container();
                                   }else{
-
-                                  return  Text("${provider.errMsg}",style: TextStyle(color: Colors.red),textAlign: TextAlign.center,);
+                                    Scaffold.of(context).showSnackBar(SnackBar(content: Text("${provider.errMsg}"),));
+                                  return  Container();
                                   }
                                 }()),
 
