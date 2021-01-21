@@ -86,7 +86,7 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill  {
                                           left: 30,
                                           right: 30)
                                       , child: Center(
-                                      child: RichText(
+                                         child: RichText(
                                         textAlign:TextAlign.center ,
                                         text: TextSpan(
 
