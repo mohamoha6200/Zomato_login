@@ -52,15 +52,6 @@ class MyApp extends StatelessWidget {
 class ZomatoLoginStateful extends StatefulWidget {
   ZomatoLoginStateful({Key key, this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -80,6 +71,14 @@ class _ZomatoLoginStatefulState extends State<ZomatoLoginStateful> {
     Size size = MediaQuery
         .of(context)
         .size;
+
+    showErrorUsingSnackBar(String message){
+ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message),));
+    provider.isloading=false;
+    provider.refreshScreen();
+    }
+
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       resizeToAvoidBottomPadding: false,
@@ -154,11 +153,13 @@ class _ZomatoLoginStatefulState extends State<ZomatoLoginStateful> {
                          if(err!=null){
                            provider.errMsg=err;
                            provider.isAnyError=true;
-                            ScaffoldMessenger.of(loginConsumerContext).showSnackBar(SnackBar(content: Text(err),));
+                               showErrorUsingSnackBar(err);
                          }else{
-                           provider.login(provider.dialcode,  provider.textController.text);
+                           provider.login(provider.dialcode,  provider.textController.text,errFunction:showErrorUsingSnackBar );
                          }
-    },
+
+
+                             },
                              child: Container(
                                  width: constraints.maxWidth * 0.85,
                                  height: 50,
@@ -322,7 +323,7 @@ class _ZomatoLoginStatefulState extends State<ZomatoLoginStateful> {
      /*        Container(
 
                child: Align(alignment: Alignment.bottomCenter,
-                 child: Container(height: 50,width:size.width,
+                 child: Container(height: 5`0,width:size.width,
                    child: Container(
                        color: Colors.black,
                        child: Text("heelo")),

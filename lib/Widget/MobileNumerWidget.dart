@@ -29,6 +29,10 @@ class _MobileNumberWidgetState extends State<MobileNumberWidget> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<LoginProvider>(context);
+    widget.textController.value=TextEditingValue(text: provider.phoneNumber);
+    /* In future edit this get texteditor object from provider directly*/
+
+
     widget.textEditingControllerCallBack(widget.textController);
     BoxConstraints constraints=widget.constraints;
     return Column(

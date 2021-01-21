@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 class LoginProvider extends ChangeNotifier{
 
-  static String phoneNumber = "kbs";
+
   static const phoneNumberExceed = "Phone Number Exceed Limit";
   static const defaultmsg="We need it to verify your account,and exclusively for that reason.It will never to shown on your profile.";
   static const RangeAcceptable =" "+defaultmsg;
@@ -22,6 +22,7 @@ class LoginProvider extends ChangeNotifier{
    bool isloading=false;
   TextEditingController textController;
   String phno="";
+  String phoneNumber="";
   String validatePhoneNumber(String mobileNumberText) {
 
     /* Validation to check whether string contins special character or alphabets*/
@@ -45,13 +46,19 @@ class LoginProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future<bool> login(String dialcode,String phoneNumber) async {
+
+  // adding error function to call parent widget scaffold error snackbar
+  Future<bool> login(String dialcode,String phoneNumber,{Function errFunction}) async {
 isloading=true;
-phno="$dialcode$phoneNumber";
-refreshScreen();
-    try{
+this.phno="$dialcode$phoneNumber";
+this.phoneNumber="$phoneNumber";
+     refreshScreen();// refresh screen called here to show loader
+
+Dio dio=ApiService.getInstance().getClient();
+
+try{
       final path = "$baseUrl/login/otp/send";
-      final response = await ApiService.getInstance().getClient().post(
+      final response = await dio.post(
         path,
         data: {
           "phoneNumber": phno,
@@ -59,11 +66,9 @@ refreshScreen();
       );
 
       final data = await response.data['data'];
-
-
       if (response.statusCode == 200) {
         print(data["sessionId"]);
-        _loadOtpScreen();
+       await _loadOtpScreen();
         isloading=false;
 
       } else {
@@ -71,17 +76,22 @@ refreshScreen();
 
       }
     } on DioError catch(e){
-      isloading=false;
-      print('response code is ${e.response.statusCode}');
-
-    }
+         errMsg=await ApiService().errorHandler(e);
+         errFunction(errMsg);
+    }  
+      // this is for reuse of varaiable use in text widget
     refreshScreen();
 
   }
 
-  _loadOtpScreen(){
-    Navigator.pushNamed(context, '/otpscreen');
+  _loadOtpScreen() async{
+   await Navigator.pushNamed(context, '/otpscreen');
   }
+
+
+
+
+
 
 
 

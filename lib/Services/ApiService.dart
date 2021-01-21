@@ -41,6 +41,7 @@ class ApiService {
   }
 
   void addErrorHandler() {
+    var _errorHandler;
     _dio.interceptors.add(
       InterceptorsWrapper(
         onResponse: (Response response) async {
@@ -66,12 +67,12 @@ class ApiService {
         onResponse: (Response response) async {
           return response;
         },
-        onError: _errorHandler,
+        onError: errorHandler,
       ),
     );
   }
 
-  Future<Response<dynamic>> _errorHandler(DioError dioError) async {
+  Future<String> errorHandler(DioError dioError) async {
 /*    AppLogger.print(dioError.toString());*/
 
     String message;
@@ -102,12 +103,12 @@ class ApiService {
       message = "connection timedout";
     } else if (dioError.type == DioErrorType.DEFAULT) {
       if (dioError.message.contains('SocketException')) {
-        message = "no internet";
+        message = "Internet not Available";
       }
     }
 
 
 
-    return dioError.response;
+    return message;
   }
 }

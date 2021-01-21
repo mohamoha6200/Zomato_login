@@ -4,6 +4,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
+import 'Constants.dart';
 import 'EditedPackages/OtpPackages/otp_field.dart';
 import 'EditedPackages/OtpPackages/style.dart';
 import 'Providers/LoginScreenProvider.dart';
@@ -11,13 +12,21 @@ import 'Providers/OtpScreenProvider.dart';
 import 'support/ConstantsVariables.dart';
 
 
-class OtpScreen extends StatefulWidget {
+class OtpScreen  extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return OtpScreenStateful();
+  }
+}
+
+
+class OtpScreenStateful extends StatefulWidget {
   @override
   _OtpScreenState createState() => _OtpScreenState();
 }
 
 
-class _OtpScreenState extends State<OtpScreen> with CodeAutoFill  {
+class _OtpScreenState extends State<OtpScreenStateful> with CodeAutoFill  {
   String otpcode;
   @override
   void initState() {
@@ -151,9 +160,9 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill  {
                                           TextSpan(text: "Didn't receive the code?", style: TextStyle(fontWeight: FontWeight.bold)),
                                           TextSpan(text: ' Resent Now',style: ((){
                                             if(value.istimerDone==true){
-                                              return TextStyle(color: Colors.red);
+                                              return TextStyle(color: HexColor("${resent_red}"));
                                             }else{
-
+                                              return TextStyle(color: HexColor("${resentdefault}"));
                                             }
 
                                           }())),
